@@ -4,11 +4,12 @@ from mne.filter import resample as mne_resample
 from scipy.signal import gammatone, lfilter
 from scipy.stats import zscore
 
+low_bandpass = 0.5
+high_bandpass = 32.0
 
-def eeg_preproc(eeg: np.ndarray, eeg_sr: int, target_sr: int, 
-                low_bandpass: float = 0.5, high_bandpass: float = 32.0) -> np.ndarray:
-    
-    # Band-Pass Filtering
+def eeg_preproc(eeg, eeg_sr, target_sr):
+                  
+    # Band-Pass Filtering              
     eeg_out = filter_data(
         eeg, eeg_sr, low_bandpass, high_bandpass, 
         method="fir", phase="zero", verbose="CRITICAL",
@@ -26,7 +27,7 @@ def eeg_preproc(eeg: np.ndarray, eeg_sr: int, target_sr: int,
     return eeg_out
 
 
-def aud_preproc(aud, aud_sr, target_sr, low_bandpass = 0.5, high_bandpass = 32.0):
+def aud_preproc(aud, aud_sr, target_sr):
     aud = aud.astype(float)
     sr1 = 8000
     sr2 = 128
