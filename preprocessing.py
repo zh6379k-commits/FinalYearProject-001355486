@@ -12,11 +12,11 @@ def eeg_preproc(eeg, eeg_sr, target_sr):
     # Band-Pass Filtering              
     eeg_out = filter_data(
         eeg, eeg_sr, low_bandpass, high_bandpass, 
-        method="fir", phase="zero", verbose="CRITICAL",
+        method="fir", phase="zero"
     )
 
     # Downsampling
-    eeg_out = mne_resample(eeg_out, target_sr, eeg_sr, verbose="CRITICAL")
+    eeg_out = mne_resample(eeg_out, target_sr, eeg_sr)
 
     # Re-Referencing To Average
     eeg_out = eeg_out - eeg_out.mean(axis=0, keepdims=True)
@@ -35,8 +35,8 @@ def aud_preproc(aud, aud_sr, target_sr):
     power_law = 0.6
 
     # Resample for Filter Bank
-    aud_out = filter_data(aud, aud_sr, None, sr1 / 2, verbose="CRITICAL")
-    aud_out = mne_resample(aud_out, sr1, aud_sr, verbose="CRITICAL")
+    aud_out = filter_data(aud, aud_sr, None, sr1 / 2)
+    aud_out = mne_resample(aud_out, sr1, aud_sr)
 
     # Gammatone Filter Bank & Compression
     subband_envelopes = []
@@ -50,9 +50,9 @@ def aud_preproc(aud, aud_sr, target_sr):
     envelope = subband_envelopes.sum(axis=0)
 
     # Downsample
-    envelope = mne_resample(envelope, sr2, sr1, verbose="CRITICAL")
-    envelope = filter_data(envelope, sr2, low_bandpass, high_bandpass, verbose="CRITICAL")
-    envelope = mne_resample(envelope, target_sr, sr2, verbose="CRITICAL")
+    envelope = mne_resample(envelope, sr2, sr1)
+    envelope = filter_data(envelope, sr2, low_bandpass, high_bandpass)
+    envelope = mne_resample(envelope, target_sr, sr2)
     envelope = zscore(envelope)
 
     return envelope
